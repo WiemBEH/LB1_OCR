@@ -19,24 +19,24 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def upload_page():
     if request.method == 'POST':
-        # check if the post request has the file part
+        # verification
         if 'file' not in request.files:
-            return render_template('upload.html', msg='No file selected')
+            return render_template('upload.html', msg='Aucun fichier sélectionné')
         file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
+
+        # aucun fichier selectionné
         if file.filename == '':
-            return render_template('upload.html', msg='No file selected')
+            return render_template('upload.html', msg='Aucun fichier sélectionné')
 
         if file and allowed_file(file.filename):
             file.save(os.path.join(os.getcwd() + UPLOAD_FOLDER, file.filename))
 
-            # call the OCR function on it
+            # Utiliser la fonction OCR
             extracted_text = ocr_core(file)
 
-            # extract the text and display it
+            # extraction du text
             return render_template('upload.html',
-                                   msg='Successfully processed',
+                                   msg='Traité avec succés',
                                    extracted_text=extracted_text,
                                    img_src=UPLOAD_FOLDER + file.filename)
     elif request.method == 'GET':
